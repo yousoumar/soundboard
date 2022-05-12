@@ -3,7 +3,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/dist/query";
 import { combineReducers } from "redux";
 import { persistReducer } from "redux-persist";
-import mediaReducer from "../features/media/mediaSlice";
+import sampleReducer from "../features/sample/sampleSlice";
 import { mediaApi } from "../services/media";
 
 const persistConfig = {
@@ -12,7 +12,8 @@ const persistConfig = {
 };
 
 const reducers = combineReducers({
-  media: mediaReducer,
+  sample: sampleReducer,
+
   [mediaApi.reducerPath]: mediaApi.reducer,
 });
 

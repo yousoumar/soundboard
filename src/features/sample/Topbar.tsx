@@ -1,15 +1,11 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 import colors from "../../config/colors";
-import Filter from "./Filter";
 
-interface Props {
-  searchText: string;
-  setSearchText: React.Dispatch<React.SetStateAction<string>>;
-  placeholder: string;
-}
+interface Props {}
 
-const Topbar: FC<Props> = ({ searchText, setSearchText, placeholder }) => {
+const Topbar: FC<Props> = () => {
+  const [searchText, setSearchText] = useState("");
   return (
     <View style={styles.container}>
       <TextInput
@@ -17,11 +13,10 @@ const Topbar: FC<Props> = ({ searchText, setSearchText, placeholder }) => {
         autoCapitalize="none"
         placeholderTextColor={colors.black}
         style={styles.input}
-        placeholder={placeholder}
+        placeholder={"Search for sample"}
         value={searchText}
         onChangeText={(text) => setSearchText(text)}
       />
-      <Filter />
     </View>
   );
 };
@@ -30,13 +25,11 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 5,
-    borderBottomWidth: 1,
-    borderColor: colors.gray,
+    paddingVertical: 10,
   },
   input: {
     backgroundColor: colors.gray,
-    padding: 10,
+    padding: 16,
     borderRadius: 25,
     color: colors.black,
     flex: 1,

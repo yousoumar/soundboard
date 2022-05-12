@@ -1,10 +1,10 @@
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import React, { FC } from "react";
 import { navigatorTheme } from "../config/navigatorTheme";
-import MediaListScreen from "../features/media/MediaListScreen";
-import SearchScreen from "../features/media/SearchScreen";
+import PadsScreen from "../features/sample/PadsScreen";
+import SampleListScreen from "../features/sample/SampleListScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -17,21 +17,28 @@ const AppNavigator: FC = () => {
         }}
       >
         <Tab.Screen
-          component={MediaListScreen}
-          name="Medias"
+          component={PadsScreen}
+          name="Pads"
           options={{
             tabBarIcon: ({ color, size, focused }) => (
-              <Ionicons name={focused ? "headset" : "headset-outline"} color={color} size={size} />
+              <MaterialCommunityIcons
+                name={focused ? "music-circle" : "music-circle-outline"}
+                size={size}
+                color={color}
+              />
             ),
           }}
         />
-
         <Tab.Screen
-          component={SearchScreen}
-          name="Search"
+          component={SampleListScreen}
+          name="Samples"
           options={{
             tabBarIcon: ({ color, size, focused }) => (
-              <Ionicons name={focused ? "search" : "search-outline"} color={color} size={size} />
+              <Ionicons
+                name={focused ? "list-circle" : "list-circle-outline"}
+                size={size}
+                color={color}
+              />
             ),
           }}
         />
