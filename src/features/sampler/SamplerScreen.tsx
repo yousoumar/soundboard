@@ -6,11 +6,9 @@ import colors from "../../config/colors";
 import Pad from "./Pad";
 import { getSampleList } from "./sampleSlice";
 
-interface Props {}
-
-const PadsScreen: FC<Props> = (props) => {
+const SamplerScreen: FC = (props) => {
   const samples = useAppSelector(getSampleList);
-  console.log(samples.length);
+
   return (
     <Screen>
       <View style={styles.container}>
@@ -42,4 +40,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PadsScreen;
+export default SamplerScreen;

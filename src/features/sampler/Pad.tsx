@@ -3,6 +3,7 @@ import { AVPlaybackSource } from "expo-av/build/AV.types";
 import React, { FC, useEffect, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import colors from "../../config/colors";
+import EditPadModal from "./EditPadModal";
 import { Sample } from "./sampleSlice";
 
 interface Props {
@@ -11,6 +12,8 @@ interface Props {
 
 const Pad: FC<Props> = ({ sample }) => {
   const [sound, setSound] = useState<Audio.Sound>();
+  const [showModal, setShowModal] = useState(false);
+
   async function playSound(uri: AVPlaybackSource) {
     await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
     const { sound } = await Audio.Sound.createAsync(uri);
@@ -26,7 +29,12 @@ const Pad: FC<Props> = ({ sample }) => {
 
   return (
     <View style={styles.container}>
-      <Pressable style={styles.pad} onPress={() => playSound(sample.uri)}></Pressable>
+      <Pressable
+        style={styles.pad}
+        onPress={() => playSound(sample.uri)}
+        onLongPress={() => setShowModal(true)}
+      ></Pressable>
+      <EditPadModal visibility={showModal} setVisibility={setShowModal} />
     </View>
   );
 };

@@ -1,11 +1,10 @@
-import { Ionicons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
 import { AVPlaybackSource } from "expo-av/build/AV.types";
 import React, { FC, useEffect, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import colors from "../../config/colors";
-import { Sample } from "../sample/sampleSlice";
 import Pad from "./Pad";
+import { Sample } from "./sampleSlice";
 
 interface Props {
   sample: Sample;
@@ -28,12 +27,8 @@ const SamplePreview: FC<Props> = ({ sample }) => {
 
   return (
     <View style={styles.container}>
-      <Pad sample={sample} />
-
       <Text style={styles.text}>{sample.name}</Text>
-      <Pressable>
-        <Ionicons name="add-circle-outline" size={64} color={colors.black} />
-      </Pressable>
+      <Pad sample={sample} />
     </View>
   );
 };
@@ -43,6 +38,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    backgroundColor: colors.gray,
+    marginBottom: 10,
+    marginHorizontal: 10,
+    borderRadius: 10,
   },
   pad: {
     backgroundColor: colors.primary,
@@ -52,7 +51,8 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   text: {
-    fontWeight: "900",
+    paddingLeft: 10,
+    fontWeight: "bold",
   },
 });
 

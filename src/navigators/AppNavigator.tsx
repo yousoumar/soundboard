@@ -3,8 +3,8 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import React, { FC } from "react";
 import { navigatorTheme } from "../config/navigatorTheme";
-import PadsScreen from "../features/sample/PadsScreen";
-import SampleListScreen from "../features/sample/SampleListScreen";
+import SampleListScreen from "../features/sampler/SampleListScreen";
+import SamplerScreen from "../features/sampler/SamplerScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -17,8 +17,8 @@ const AppNavigator: FC = () => {
         }}
       >
         <Tab.Screen
-          component={PadsScreen}
-          name="Pads"
+          component={SamplerScreen}
+          name="Sampler"
           options={{
             tabBarIcon: ({ color, size, focused }) => (
               <MaterialCommunityIcons
