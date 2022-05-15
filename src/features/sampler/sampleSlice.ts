@@ -157,7 +157,12 @@ export const sample = createSlice({
 });
 
 export const getSampleList = (state: RootState) => state.sample.sampleList;
+
+export const getFiltredSampleList = (searchText: string) => (state: RootState) =>
+  state.sample.sampleList.filter((s) => s.name.toLowerCase().includes(searchText.toLowerCase()));
+
 export const getPadList = (state: RootState) => state.sample.padList;
+
 export const getSampleById = (id: string) => (state: RootState) =>
   state.sample.sampleList.find((s) => s.id === id)!;
 

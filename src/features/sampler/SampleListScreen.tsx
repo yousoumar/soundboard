@@ -1,19 +1,30 @@
-import React, { FC } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import React, { FC, useState } from "react";
+import { ScrollView, StyleSheet, TextInput, View } from "react-native";
 import { useAppSelector } from "../../app/hooks/hooks";
 import Screen from "../../components/Screen";
+import colors from "../../config/colors";
 import SamplePreview from "./Sample";
-import { getSampleList } from "./sampleSlice";
-import Topbar from "./Topbar";
+import { getFiltredSampleList } from "./sampleSlice";
 
 interface Props {}
 
 const SampleListScreen: FC<Props> = (props) => {
-  const samples = useAppSelector(getSampleList);
+  const [searchText, setSearchText] = useState("");
+  const samples = useAppSelector(getFiltredSampleList(searchText));
 
   return (
     <Screen>
-      <Topbar />
+      <View style={styles.topbar}>
+        <TextInput
+          autoCorrect={false}
+          autoCapitalize="none"
+          placeholderTextColor={colors.black}
+          style={styles.input}
+          placeholder={"Search for sample"}
+          value={searchText}
+          onChangeText={(text) => setSearchText(text)}
+        />
+      </View>
       <ScrollView>
         <View>
           {samples.map((m) => (
@@ -31,6 +42,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flex: 1,
   },
+  input: {
+    backgroundColor: colors.gray,
+    padding: 16,
+    borderRadius: 25,
+    color: colors.black,
+    flex: 1,
+    marginHorizontal: 10,
+  },
+  topbar: { flexDirection: "row", alignItems: "center", paddingVertical: 10 },
 });
 
 export default SampleListScreen;
