@@ -1,15 +1,24 @@
 import { Entypo, FontAwesome5, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
 import React, { FC, useState } from "react";
-import { Alert, FlatList, Modal, Pressable, StyleSheet, Text, View } from "react-native";
-import { useAppDispatch, useAppSelector } from "../../app/hooks/hooks";
+import {
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  Modal,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import { useAppDispatch } from "../../app/hooks/hooks";
 import Input from "../../components/Input";
 import Screen from "../../components/Screen";
 import colors from "../../config/colors";
 import { useGetSoundWithSearchKeywordQuery } from "../../services/freesound";
 import SamplePreview from "./Sample";
 import SampleList from "./SampleList";
-import { addSampleToList, getSampleList, Pad, Sample, updatePad } from "./sampleSlice";
+import { addSampleToList, Pad, Sample, updatePad } from "./sampleSlice";
 interface Props {
   pad: Pad;
   sample: Sample;
@@ -22,20 +31,21 @@ const EditPadModal: FC<Props> = ({ visibility = false, setVisibility, sample, pa
   const [selectModalVisibility, setSelectModalVisibility] = useState(false);
   const [apiModalVisibility, setApiModalVisibility] = useState(false);
   const [recordModalVisibility, setRecordModalVisibility] = useState(false);
-  const samples = useAppSelector(getSampleList);
   const [sampleName, setSampleName] = useState("");
   const [timer, setTimer] = useState(0);
   const [recording, setRecording] = useState<Audio.Recording>();
   const [searchInputValue, setSearchInputValue] = useState("");
-  const { data, isFetching } = useGetSoundWithSearchKeywordQuery(searchInputValue);
+  const { data, isFetching } = useGetSoundWithSearchKeywordQuery(searchInputValue, {
+    skip: searchInputValue === "",
+  });
 
   const setPad = (sample: Sample) => {
     dispatch(updatePad({ ...pad, id: sample.id }));
     dispatch(addSampleToList(sample));
-    setVisibility(false);
     setSelectModalVisibility(false);
     setRecordModalVisibility(false);
     setApiModalVisibility(false);
+    setVisibility(false);
     setSearchInputValue("");
     setSampleName("");
   };
@@ -79,7 +89,7 @@ const EditPadModal: FC<Props> = ({ visibility = false, setVisibility, sample, pa
     <Modal statusBarTranslucent={true} animationType="slide" visible={visibility}>
       <Screen>
         <View style={styles.header}>
-          <Text style={styles.text}>Chosen sample is {sample.name}</Text>
+          <Text style={styles.text}>Chosen sample for this pad is {sample.name}</Text>
           <Pressable onPress={() => setVisibility(false)}>
             <Ionicons name="close-circle-outline" size={33} color="black" />
           </Pressable>
@@ -139,31 +149,26 @@ const EditPadModal: FC<Props> = ({ visibility = false, setVisibility, sample, pa
               onValueChange={(value) => setSearchInputValue(value)}
               placeholder="Search for samle from Freesound API"
             />
-
-            <FlatList
-              style={{ marginTop: 16 }}
-              data={data?.results}
-              keyExtractor={(item) => item.id.toString()}
-              refreshing={isFetching}
-              renderItem={({ item }) => (
-                <SamplePreview
-                  onPress={() =>
-                    setPad({
+            {isFetching ? (
+              <ActivityIndicator style={{ marginTop: 30 }} />
+            ) : (
+              <FlatList
+                style={{ marginTop: 16 }}
+                data={data?.results}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                  <SamplePreview
+                    onPress={setPad}
+                    sample={{
                       id: item.id.toString(),
                       uri: item.name,
                       type: "external",
                       name: item.username,
-                    })
-                  }
-                  sample={{
-                    id: item.id.toString(),
-                    uri: item.name,
-                    type: "external",
-                    name: item.username,
-                  }}
-                />
-              )}
-            />
+                    }}
+                  />
+                )}
+              />
+            )}
           </Screen>
         </Modal>
         <Modal visible={recordModalVisibility} animationType="slide">

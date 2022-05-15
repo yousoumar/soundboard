@@ -9,15 +9,20 @@ interface Freesound {
 }
 export const freesoundApi = createApi({
   reducerPath: "freesoundApi",
+
   baseQuery: fetchBaseQuery({
-    baseUrl:
-      "https://freesound.org/apiv2/search/text/?token=bbuumiZWaZ8jpJyjyFqiGxpYZmfocpy7cnzREzmL&query=",
+    baseUrl: "https://freesound.org/apiv2/",
   }),
+
   endpoints: (builder) => ({
     getSoundWithSearchKeyword: builder.query<{ results: Freesound[] }, string>({
-      query: (searchParam) => searchParam,
+      query: (searchParam) =>
+        `search/text/?token=bbuumiZWaZ8jpJyjyFqiGxpYZmfocpy7cnzREzmL&query=${searchParam}`,
+    }),
+    getSoundById: builder.query<any, string>({
+      query: (id) => `sounds/${id}/?token=bbuumiZWaZ8jpJyjyFqiGxpYZmfocpy7cnzREzmL`,
     }),
   }),
 });
 
-export const { useGetSoundWithSearchKeywordQuery } = freesoundApi;
+export const { useGetSoundWithSearchKeywordQuery, useGetSoundByIdQuery } = freesoundApi;
