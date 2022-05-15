@@ -26,7 +26,7 @@
     "web": {
       "favicon": "./src/assets/favicon.png"
     },
-    "description": "A minimalist sampler mobile application made with TypeScript, React Native, and Redux.",
+    "description": "Mobile application sampler made with TypeScript, React Native, and Redux as a school project.",
     "githubUrl": "https://github.com/yousoumar/soundboard"
   }
 }

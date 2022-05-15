@@ -131,7 +131,7 @@ const EditPadModal: FC<Props> = ({ visibility = false, setVisibility, sample, pa
                 <Input
                   value={sampleName}
                   onValueChange={(value) => setSampleName(value)}
-                  placeholder="Enter ample name"
+                  placeholder="Enter sample name"
                 />
                 {sampleName !== "" ? (
                   <Pressable style={styles.recordButton} onPress={() => startRecording()}>
