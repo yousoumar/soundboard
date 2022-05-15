@@ -1,55 +1,89 @@
-import { Ionicons } from "@expo/vector-icons";
-import React, { FC } from "react";
-import {
-  Modal,
-  Platform,
-  Pressable,
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Entypo, Ionicons } from "@expo/vector-icons";
+import React, { FC, useState } from "react";
+import { FlatList, Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { useAppDispatch, useAppSelector } from "../../app/hooks/hooks";
+import Screen from "../../components/Screen";
 import colors from "../../config/colors";
+import SamplePreview from "./Sample";
+import { getSampleList, Pad, Sample, updatePad } from "./sampleSlice";
 
 interface Props {
+  pad: Pad;
+  sample: Sample;
   visibility: boolean;
   setVisibility: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const EditPadModal: FC<Props> = ({ visibility = false, setVisibility }) => {
+const EditPadModal: FC<Props> = ({ visibility = false, setVisibility, sample, pad }) => {
+  const dispatch = useAppDispatch();
+  const [innerModalVisibility, setInnerModalVisibility] = useState(false);
+  const samples = useAppSelector(getSampleList);
+
+  const setPad = (sample: Sample) => {
+    dispatch(updatePad({ ...pad, id: sample.id }));
+    setVisibility(false);
+    setInnerModalVisibility(false);
+  };
   return (
     <Modal statusBarTranslucent={true} animationType="slide" visible={visibility}>
-      <SafeAreaView>
-        <View style={styles.modalView}>
+      <Screen>
+        <View style={styles.header}>
+          <Text style={styles.text}>Chosen sample is {sample.name}</Text>
           <Pressable onPress={() => setVisibility(false)} style={styles.closeButton}>
-            <Ionicons name="close-circle-outline" size={44} color="black" />
+            <Ionicons name="close-circle-outline" size={33} color="black" />
           </Pressable>
-          <View>
-            <Text>Chose media type you want to query</Text>
-          </View>
         </View>
-      </SafeAreaView>
+        <View>
+          <Pressable onPress={() => setInnerModalVisibility(true)}>
+            <View style={styles.header}>
+              <Text>Change the sample</Text>
+              <Entypo name="chevron-with-circle-down" size={28} color="black" />
+            </View>
+          </Pressable>
+          <Modal visible={innerModalVisibility} animationType="slide">
+            <Screen>
+              <View
+                style={[
+                  styles.header,
+                  { marginBottom: 16, marginTop: 0, borderTopWidth: 0, paddingTop: 0 },
+                ]}
+              >
+                <Text>Tap on Sample's name to chose</Text>
+                <Pressable onPress={() => setInnerModalVisibility(false)}>
+                  <Ionicons name="close-circle-outline" size={34} color="black" />
+                </Pressable>
+              </View>
+              <FlatList
+                data={samples}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                  <Pressable onPress={() => setPad(item)}>
+                    <SamplePreview sample={item} />
+                  </Pressable>
+                )}
+              />
+            </Screen>
+          </Modal>
+        </View>
+      </Screen>
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  modalView: {
-    backgroundColor: "white",
+  header: {
+    flexDirection: "row",
     alignItems: "center",
-    flexGrow: 1,
-    paddingTop: Platform.OS == "android" ? StatusBar.currentHeight : 0,
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    borderColor: colors.gray,
+    borderBottomWidth: 1,
+    paddingVertical: 16,
   },
-
-  closeButton: {
-    right: 10,
-    marginLeft: "auto",
-  },
-
   text: {
-    color: colors.white,
+    fontWeight: "bold",
   },
+  closeButton: { marginRight: -3 },
 });
 
 export default EditPadModal;

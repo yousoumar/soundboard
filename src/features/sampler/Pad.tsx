@@ -2,18 +2,19 @@ import { Audio } from "expo-av";
 import { AVPlaybackSource } from "expo-av/build/AV.types";
 import React, { FC, useEffect, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
+import { useAppSelector } from "../../app/hooks/hooks";
 import colors from "../../config/colors";
 import EditPadModal from "./EditPadModal";
-import { Sample } from "./sampleSlice";
+import { getSampleById, Pad } from "./sampleSlice";
 
 interface Props {
-  sample: Sample;
+  pad: Pad;
 }
 
-const Pad: FC<Props> = ({ sample }) => {
+const PadPreview: FC<Props> = ({ pad }) => {
   const [sound, setSound] = useState<Audio.Sound>();
   const [showModal, setShowModal] = useState(false);
-
+  const sample = useAppSelector(getSampleById(pad.id));
   async function playSound(uri: AVPlaybackSource) {
     await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
     const { sound } = await Audio.Sound.createAsync(uri);
@@ -34,7 +35,7 @@ const Pad: FC<Props> = ({ sample }) => {
         onPress={() => playSound(sample.uri)}
         onLongPress={() => setShowModal(true)}
       ></Pressable>
-      <EditPadModal visibility={showModal} setVisibility={setShowModal} />
+      <EditPadModal pad={pad} sample={sample} visibility={showModal} setVisibility={setShowModal} />
     </View>
   );
 };
@@ -57,4 +58,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Pad;
+export default PadPreview;

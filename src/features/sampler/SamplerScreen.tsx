@@ -4,17 +4,16 @@ import { useAppSelector } from "../../app/hooks/hooks";
 import Screen from "../../components/Screen";
 import colors from "../../config/colors";
 import Pad from "./Pad";
-import { getSampleList } from "./sampleSlice";
+import { getPadList } from "./sampleSlice";
 
-const SamplerScreen: FC = (props) => {
-  const samples = useAppSelector(getSampleList);
-
+const SamplerScreen: FC = () => {
+  const padList = useAppSelector(getPadList);
   return (
     <Screen>
       <View style={styles.container}>
         <View style={styles.pads}>
-          {samples.map((m) => (
-            <Pad key={m.id} sample={m}></Pad>
+          {padList.map((p) => (
+            <Pad key={p.index} pad={p}></Pad>
           ))}
         </View>
       </View>
