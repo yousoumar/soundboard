@@ -35,7 +35,6 @@ const SamplePreview: FC<Props> = ({ sample, onPress }) => {
       style={styles.container}
       onPress={() => {
         if (onPress) {
-          console.log("hi");
           onPress(sample);
         }
       }}

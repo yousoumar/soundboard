@@ -19,7 +19,7 @@ export const freesoundApi = createApi({
       query: (searchParam) =>
         `search/text/?token=bbuumiZWaZ8jpJyjyFqiGxpYZmfocpy7cnzREzmL&query=${searchParam}`,
     }),
-    getSoundById: builder.query<any, string>({
+    getSoundById: builder.query<{ previews: { "preview-hq-mp3": string } }, string>({
       query: (id) => `sounds/${id}/?token=bbuumiZWaZ8jpJyjyFqiGxpYZmfocpy7cnzREzmL`,
     }),
   }),

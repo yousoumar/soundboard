@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, View } from "react-native";
 import { useAppSelector } from "../../app/hooks/hooks";
 import colors from "../../config/colors";
 import { useGetSoundByIdQuery } from "../../services/freesound";
-import EditPadModal from "./EditPadModal";
+import PadEditModal from "./PadEditModal";
 import { getSampleById, Pad } from "./sampleSlice";
 import { useSoundContext } from "./soundContext";
 
@@ -36,7 +36,7 @@ const PadPreview: FC<Props> = ({ pad }) => {
         onPress={() => (freesoundUri ? playSound(freesoundUri) : playSound(sample.uri))}
         onLongPress={() => setShowModal(true)}
       ></Pressable>
-      <EditPadModal pad={pad} sample={sample} visibility={showModal} setVisibility={setShowModal} />
+      <PadEditModal pad={pad} sample={sample} visibility={showModal} setVisibility={setShowModal} />
     </View>
   );
 };

@@ -4,7 +4,7 @@ import { useAppSelector } from "../../app/hooks/hooks";
 import Input from "../../components/Input";
 import Screen from "../../components/Screen";
 import colors from "../../config/colors";
-import SamplePreview from "./Sample";
+import SamplePreview from "./SamplePreview";
 import { getFiltredSampleList, Sample } from "./sampleSlice";
 
 interface Props {
@@ -31,7 +31,7 @@ const SampleList: FC<Props> = ({ handleSamplePress }) => {
         <Input
           value={searchText}
           onValueChange={(value: string) => setSearchText(value)}
-          placeholder="Search for sample"
+          placeholder="Search for local sample"
         />
         <View style={styles.buttons}>
           <Pressable
@@ -51,7 +51,7 @@ const SampleList: FC<Props> = ({ handleSamplePress }) => {
             }}
           >
             <Text style={{ color: sampleType == "local" ? colors.white : colors.black }}>
-              Defaults
+              Default
             </Text>
           </Pressable>
           <Pressable
@@ -73,7 +73,7 @@ const SampleList: FC<Props> = ({ handleSamplePress }) => {
             }}
           >
             <Text style={{ color: sampleType == "external" ? colors.white : colors.black }}>
-              Freesound
+              External
             </Text>
           </Pressable>
         </View>

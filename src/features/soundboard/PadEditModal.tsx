@@ -1,4 +1,4 @@
-import { Entypo, FontAwesome5, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
 import React, { FC, useState } from "react";
 import {
@@ -16,8 +16,8 @@ import Input from "../../components/Input";
 import Screen from "../../components/Screen";
 import colors from "../../config/colors";
 import { useGetSoundWithSearchKeywordQuery } from "../../services/freesound";
-import SamplePreview from "./Sample";
 import SampleList from "./SampleList";
+import SamplePreview from "./SamplePreview";
 import { addSampleToList, Pad, Sample, updatePad } from "./sampleSlice";
 interface Props {
   pad: Pad;
@@ -26,15 +26,14 @@ interface Props {
   setVisibility: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const EditPadModal: FC<Props> = ({ visibility = false, setVisibility, sample, pad }) => {
+const PadEditModal: FC<Props> = ({ visibility = false, setVisibility, sample, pad }) => {
   const dispatch = useAppDispatch();
-  const [selectModalVisibility, setSelectModalVisibility] = useState(false);
-  const [apiModalVisibility, setApiModalVisibility] = useState(false);
-  const [recordModalVisibility, setRecordModalVisibility] = useState(false);
+
   const [sampleName, setSampleName] = useState("");
   const [timer, setTimer] = useState(0);
   const [recording, setRecording] = useState<Audio.Recording>();
   const [searchInputValue, setSearchInputValue] = useState("");
+  const [sampleType, setSampleType] = useState<"local" | "api" | "record">("local");
   const { data, isFetching } = useGetSoundWithSearchKeywordQuery(searchInputValue, {
     skip: searchInputValue === "",
   });
@@ -42,9 +41,6 @@ const EditPadModal: FC<Props> = ({ visibility = false, setVisibility, sample, pa
   const setPad = (sample: Sample) => {
     dispatch(updatePad({ ...pad, id: sample.id }));
     dispatch(addSampleToList(sample));
-    setSelectModalVisibility(false);
-    setRecordModalVisibility(false);
-    setApiModalVisibility(false);
     setVisibility(false);
     setSearchInputValue("");
     setSampleName("");
@@ -89,102 +85,101 @@ const EditPadModal: FC<Props> = ({ visibility = false, setVisibility, sample, pa
     <Modal statusBarTranslucent={true} animationType="slide" visible={visibility}>
       <Screen>
         <View style={styles.header}>
-          <Text style={styles.text}>Chosen sample for this pad is {sample.name}</Text>
+          <View>
+            <Text>Chosen sample for this pad is {sample.name}.</Text>
+            <Text>Tape on a sample to change it, or record.</Text>
+          </View>
           <Pressable onPress={() => setVisibility(false)}>
-            <Ionicons name="close-circle-outline" size={33} color="black" />
+            <Ionicons name="close-circle-outline" size={40} color="black" />
           </Pressable>
         </View>
 
-        <Pressable onPress={() => setSelectModalVisibility(true)}>
-          <View style={styles.header}>
-            <Text>Select sample from your local library</Text>
-            <Entypo
-              name="chevron-with-circle-down"
-              size={28}
-              color="black"
-              style={{ marginRight: 2 }}
-            />
-          </View>
-        </Pressable>
-        <Pressable onPress={() => setApiModalVisibility(true)}>
-          <View style={styles.header}>
-            <Text>Get a sample from Freesound</Text>
+        <View style={styles.buttons}>
+          <Pressable
+            onPress={() => setSampleType("local")}
+            style={{
+              ...styles.button,
+              backgroundColor: sampleType == "local" ? colors.black : colors.gray,
+            }}
+          >
+            <Text style={{ color: sampleType == "local" ? colors.white : colors.black }}>
+              Local
+            </Text>
+          </Pressable>
+          <Pressable
+            onPress={() => setSampleType("api")}
+            style={{
+              ...styles.button,
+              backgroundColor: sampleType == "api" ? colors.black : colors.gray,
+            }}
+          >
+            <Text style={{ color: sampleType == "api" ? colors.white : colors.black }}>
+              Freesound
+            </Text>
+          </Pressable>
+          <Pressable
+            onPress={() => setSampleType("record")}
+            style={{
+              ...styles.button,
+              backgroundColor: sampleType == "record" ? colors.black : colors.gray,
+            }}
+          >
+            <Text style={{ color: sampleType == "record" ? colors.white : colors.black }}>
+              Record
+            </Text>
+          </Pressable>
+        </View>
 
-            <MaterialCommunityIcons name="web" size={28} color="black" style={{ marginRight: 2 }} />
-          </View>
-        </Pressable>
-        <Pressable onPress={() => setRecordModalVisibility(true)}>
-          <View style={styles.header}>
-            <Text>Recond a new sample</Text>
-            <FontAwesome5
-              name="creative-commons-sampling"
-              size={28}
-              color="black"
-              style={{ marginRight: 2 }}
-            />
-          </View>
-        </Pressable>
-        <Modal visible={selectModalVisibility} animationType="slide">
-          <Screen>
-            <View style={[styles.header, { marginBottom: 16, marginTop: 0, borderTopWidth: 0 }]}>
-              <Text>Tap on Sample's name to chose</Text>
-              <Pressable onPress={() => setSelectModalVisibility(false)}>
-                <Ionicons name="close-circle-outline" size={34} color="black" />
-              </Pressable>
-            </View>
+        {sampleType == "local" ? (
+          <>
             <SampleList handleSamplePress={setPad} />
-          </Screen>
-        </Modal>
+          </>
+        ) : (
+          <></>
+        )}
 
-        <Modal visible={apiModalVisibility} animationType="slide">
-          <Screen>
-            <View style={[styles.header, { marginBottom: 16, marginTop: 0, borderTopWidth: 0 }]}>
-              <Text>Tap on Sample's name to chose</Text>
-              <Pressable onPress={() => setApiModalVisibility(false)}>
-                <Ionicons name="close-circle-outline" size={34} color="black" />
-              </Pressable>
-            </View>
+        {sampleType === "api" ? (
+          <>
             <Input
               value={searchInputValue}
               onValueChange={(value) => setSearchInputValue(value)}
-              placeholder="Search for samle from Freesound API"
+              placeholder="Search for sample from Freesound API"
             />
             {isFetching ? (
               <ActivityIndicator style={{ marginTop: 30 }} />
             ) : (
-              <FlatList
-                style={{ marginTop: 16 }}
-                data={data?.results}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                  <SamplePreview
-                    onPress={setPad}
-                    sample={{
-                      id: item.id.toString(),
-                      uri: item.name,
-                      type: "external",
-                      name: item.username,
-                    }}
-                  />
-                )}
-              />
+              <>
+                <FlatList
+                  style={{ marginTop: 16 }}
+                  data={data?.results}
+                  keyExtractor={(item) => item.id.toString()}
+                  renderItem={({ item }) => (
+                    <SamplePreview
+                      onPress={setPad}
+                      sample={{
+                        id: item.id.toString(),
+                        uri: item.name,
+                        type: "external",
+                        name: item.username,
+                      }}
+                    />
+                  )}
+                />
+              </>
             )}
-          </Screen>
-        </Modal>
-        <Modal visible={recordModalVisibility} animationType="slide">
-          <Screen>
-            <View style={[styles.header, { marginBottom: 16, marginTop: 0, borderTopWidth: 0 }]}>
-              <Text>Record a new song</Text>
-              <Pressable onPress={() => setRecordModalVisibility(false)}>
-                <Ionicons name="close-circle-outline" size={34} color="black" />
-              </Pressable>
-            </View>
+          </>
+        ) : (
+          <></>
+        )}
+
+        {sampleType === "record" ? (
+          <>
             {!recording ? (
               <View>
                 <Input
                   value={sampleName}
                   onValueChange={(value) => setSampleName(value)}
-                  placeholder="Enter sample name"
+                  placeholder="Enter sample name to start recording"
                 />
                 {sampleName !== "" ? (
                   <Pressable style={styles.recordButton} onPress={() => startRecording()}>
@@ -205,8 +200,10 @@ const EditPadModal: FC<Props> = ({ visibility = false, setVisibility, sample, pa
                 </Pressable>
               </View>
             )}
-          </Screen>
-        </Modal>
+          </>
+        ) : (
+          <></>
+        )}
       </Screen>
     </Modal>
   );
@@ -221,9 +218,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     padding: 10,
   },
-  text: {
-    fontWeight: "bold",
-  },
+
   recordButton: {
     backgroundColor: colors.black,
     margin: 16,
@@ -239,6 +234,22 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginHorizontal: 10,
   },
+  buttons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 10,
+    paddingTop: 16,
+    borderColor: colors.gray,
+    borderBottomWidth: 1,
+    paddingBottom: 16,
+    marginBottom: 16,
+  },
+  button: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 25,
+  },
 });
 
-export default EditPadModal;
+export default PadEditModal;

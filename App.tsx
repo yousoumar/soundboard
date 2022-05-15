@@ -2,7 +2,7 @@ import { Provider } from "react-redux";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 import { store } from "./src/app/store";
-import SoundContextProvider from "./src/features/sampler/soundContext";
+import SoundContextProvider from "./src/features/soundboard/soundContext";
 import AppNavigator from "./src/navigators/AppNavigator";
 
 const persistor = persistStore(store);

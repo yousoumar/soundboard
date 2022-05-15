@@ -3,7 +3,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/dist/query";
 import { combineReducers } from "redux";
 import { persistReducer } from "redux-persist";
-import sampleReducer from "../features/sampler/sampleSlice";
+import sampleReducer from "../features/soundboard/sampleSlice";
 import { freesoundApi } from "../services/freesound";
 
 const persistConfig = {
