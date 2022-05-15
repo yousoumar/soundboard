@@ -5,8 +5,8 @@ import { RootState } from "../../app/store";
 export interface Sample {
   id: string;
   name: string;
-  local: boolean;
-  uri: AVPlaybackSource;
+  type: "local" | "recorded" | "external";
+  uri: AVPlaybackSource | string;
 }
 
 export interface Pad {
@@ -25,97 +25,97 @@ const initialState: SampleSlice = {
       id: "0",
       name: "ClapOne",
       uri: require("../../assets/samples/clap_1.wav"),
-      local: true,
+      type: "local",
     },
     {
       id: "1",
       name: "ClapTwo",
       uri: require("../../assets/samples/clap_2.wav"),
-      local: true,
+      type: "local",
     },
     {
       id: "2",
       name: "FxOne",
       uri: require("../../assets/samples/fx_1.wav"),
-      local: true,
+      type: "local",
     },
     {
       id: "3",
       name: "FxTwo",
       uri: require("../../assets/samples/fx_2.wav"),
-      local: true,
+      type: "local",
     },
     {
       id: "4",
       name: "KickOne",
       uri: require("../../assets/samples/kick_1.wav"),
-      local: true,
+      type: "local",
     },
     {
       id: "5",
       name: "KickTwo",
       uri: require("../../assets/samples/kick_2.wav"),
-      local: true,
+      type: "local",
     },
     {
       id: "6",
       name: "ShakerOne",
       uri: require("../../assets/samples/shaker_1.wav"),
-      local: true,
+      type: "local",
     },
     {
       id: "7",
       name: "ShakerTwo",
       uri: require("../../assets/samples/shaker_2.wav"),
-      local: true,
+      type: "local",
     },
     {
       id: "8",
       name: "ShakerThree",
       uri: require("../../assets/samples/shaker_3.wav"),
-      local: true,
+      type: "local",
     },
     {
       id: "9",
       name: "SnareOne",
       uri: require("../../assets/samples/snare_1.wav"),
-      local: true,
+      type: "local",
     },
     {
       id: "10",
       name: "SnareTwo",
       uri: require("../../assets/samples/snare_2.wav"),
-      local: true,
+      type: "local",
     },
     {
       id: "11",
       name: "TomOne",
       uri: require("../../assets/samples/tom_1.wav"),
-      local: true,
+      type: "local",
     },
     {
       id: "12",
       name: "TomTwo",
       uri: require("../../assets/samples/tom_2.wav"),
-      local: true,
+      type: "local",
     },
     {
       id: "13",
       name: "TomThree",
       uri: require("../../assets/samples/tom_3.wav"),
-      local: true,
+      type: "local",
     },
     {
       id: "14",
       name: "TomFour",
       uri: require("../../assets/samples/tom_4.wav"),
-      local: true,
+      type: "local",
     },
     {
       id: "15",
       name: "TomFive",
       uri: require("../../assets/samples/tom_5.wav"),
-      local: true,
+      type: "local",
     },
   ],
   padList: [
@@ -148,10 +148,8 @@ export const sample = createSlice({
     updatePad: (state, action: PayloadAction<Pad>) => {
       state.padList[action.payload.index].id = action.payload.id;
     },
-    removeSampleFromList: (state, action: PayloadAction<Sample>) => {
-      state.sampleList = state.sampleList.filter(
-        (m: Sample) => JSON.stringify(m) !== JSON.stringify(action.payload)
-      );
+    removeSampleFromList: (state, action: PayloadAction<string>) => {
+      state.sampleList = state.sampleList.filter((m: Sample) => m.id !== action.payload);
     },
   },
 });
@@ -164,7 +162,8 @@ export const getFiltredSampleList = (searchText: string) => (state: RootState) =
 export const getPadList = (state: RootState) => state.sample.padList;
 
 export const getSampleById = (id: string) => (state: RootState) =>
-  state.sample.sampleList.find((s) => s.id === id)!;
+  state.sample.sampleList.find((s) => s.id === id) ||
+  state.sample.sampleList.find((s) => s.id === "0")!;
 
 export const { addSampleToList, removeSampleFromList, updatePad } = sample.actions;
 

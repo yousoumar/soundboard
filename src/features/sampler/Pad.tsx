@@ -15,11 +15,18 @@ const PadPreview: FC<Props> = ({ pad }) => {
   const [sound, setSound] = useState<Audio.Sound>();
   const [showModal, setShowModal] = useState(false);
   const sample = useAppSelector(getSampleById(pad.id));
-  async function playSound(uri: AVPlaybackSource) {
+
+  async function playSound(uri: AVPlaybackSource | string) {
     await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
-    const { sound } = await Audio.Sound.createAsync(uri);
-    setSound(sound);
-    await sound.playAsync();
+    if (typeof uri !== "string") {
+      const { sound } = await Audio.Sound.createAsync(uri);
+      setSound(sound);
+      await sound.playAsync();
+    } else {
+      const { sound } = await Audio.Sound.createAsync({ uri });
+      setSound(sound);
+      await sound.playAsync();
+    }
   }
 
   useEffect(() => {

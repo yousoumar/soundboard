@@ -1,8 +1,8 @@
 import React, { FC, useState } from "react";
-import { ScrollView, StyleSheet, TextInput, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { useAppSelector } from "../../app/hooks/hooks";
+import Input from "../../components/Input";
 import Screen from "../../components/Screen";
-import colors from "../../config/colors";
 import SamplePreview from "./Sample";
 import { getFiltredSampleList } from "./sampleSlice";
 
@@ -15,14 +15,10 @@ const SampleListScreen: FC<Props> = (props) => {
   return (
     <Screen>
       <View style={styles.topbar}>
-        <TextInput
-          autoCorrect={false}
-          autoCapitalize="none"
-          placeholderTextColor={colors.black}
-          style={styles.input}
-          placeholder={"Search for sample"}
+        <Input
           value={searchText}
-          onChangeText={(text) => setSearchText(text)}
+          onValueChange={(value: string) => setSearchText(value)}
+          placeholder="Search for sample"
         />
       </View>
       <ScrollView>
@@ -42,15 +38,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flex: 1,
   },
-  input: {
-    backgroundColor: colors.gray,
-    padding: 16,
-    borderRadius: 25,
-    color: colors.black,
-    flex: 1,
-    marginHorizontal: 10,
+
+  topbar: {
+    marginBottom: 16,
   },
-  topbar: { flexDirection: "row", alignItems: "center", paddingVertical: 10 },
 });
 
 export default SampleListScreen;
