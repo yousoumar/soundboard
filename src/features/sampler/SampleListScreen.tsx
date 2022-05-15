@@ -1,33 +1,29 @@
 import React, { FC, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import { useAppSelector } from "../../app/hooks/hooks";
-import Input from "../../components/Input";
 import Screen from "../../components/Screen";
-import SamplePreview from "./Sample";
-import { getFiltredSampleList } from "./sampleSlice";
+import SampleList from "./SampleList";
+import { getFiltredSampleList, Sample } from "./sampleSlice";
 
 interface Props {}
 
 const SampleListScreen: FC<Props> = (props) => {
   const [searchText, setSearchText] = useState("");
+  const [sampleType, setSampleType] = useState<"local" | "external" | "recorded" | "all">("all");
   const samples = useAppSelector(getFiltredSampleList(searchText));
-
+  let filtredSample: Sample[];
+  if (sampleType === "external") {
+    filtredSample = samples.filter((s) => s.type === "external");
+  } else if (sampleType === "recorded") {
+    filtredSample = samples.filter((s) => s.type === "recorded");
+  } else if (sampleType === "local") {
+    filtredSample = samples.filter((s) => s.type === "local");
+  } else {
+    filtredSample = samples;
+  }
   return (
     <Screen>
-      <View style={styles.topbar}>
-        <Input
-          value={searchText}
-          onValueChange={(value: string) => setSearchText(value)}
-          placeholder="Search for sample"
-        />
-      </View>
-      <ScrollView>
-        <View>
-          {samples.map((m) => (
-            <SamplePreview key={m.id} sample={m} />
-          ))}
-        </View>
-      </ScrollView>
+      <SampleList />
     </Screen>
   );
 };
@@ -38,7 +34,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flex: 1,
   },
-
+  buttons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 10,
+    paddingTop: 16,
+  },
+  button: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 25,
+  },
   topbar: {
     marginBottom: 16,
   },

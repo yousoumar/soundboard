@@ -4,7 +4,7 @@ import { setupListeners } from "@reduxjs/toolkit/dist/query";
 import { combineReducers } from "redux";
 import { persistReducer } from "redux-persist";
 import sampleReducer from "../features/sampler/sampleSlice";
-import { mediaApi } from "../services/media";
+import { freesoundApi } from "../services/freesound";
 
 const persistConfig = {
   key: "root",
@@ -14,7 +14,7 @@ const persistConfig = {
 const reducers = combineReducers({
   sample: sampleReducer,
 
-  [mediaApi.reducerPath]: mediaApi.reducer,
+  [freesoundApi.reducerPath]: freesoundApi.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducers);
@@ -24,7 +24,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }).concat(mediaApi.middleware),
+    }).concat(freesoundApi.middleware),
 });
 
 setupListeners(store.dispatch);

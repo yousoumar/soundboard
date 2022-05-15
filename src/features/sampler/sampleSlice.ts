@@ -143,7 +143,8 @@ export const sample = createSlice({
   initialState,
   reducers: {
     addSampleToList: (state, action: PayloadAction<Sample>) => {
-      state.sampleList.push(action.payload);
+      const sample = action.payload;
+      !state.sampleList.find((s) => s.id === sample.id) && state.sampleList.push(sample);
     },
     updatePad: (state, action: PayloadAction<Pad>) => {
       state.padList[action.payload.index].id = action.payload.id;
@@ -164,6 +165,9 @@ export const getPadList = (state: RootState) => state.sample.padList;
 export const getSampleById = (id: string) => (state: RootState) =>
   state.sample.sampleList.find((s) => s.id === id) ||
   state.sample.sampleList.find((s) => s.id === "0")!;
+
+export const isSampleInStore = (id: string) => (state: RootState) =>
+  state.sample.sampleList.find((s) => s.id === id);
 
 export const { addSampleToList, removeSampleFromList, updatePad } = sample.actions;
 

@@ -15,15 +15,29 @@ const PadPreview: FC<Props> = ({ pad }) => {
   const [sound, setSound] = useState<Audio.Sound>();
   const [showModal, setShowModal] = useState(false);
   const sample = useAppSelector(getSampleById(pad.id));
+  const [freesoundUri, setFreesoundUri] = useState("");
+
+  useEffect(() => {
+    if (sample.type === "external") {
+      fetch(
+        `https://freesound.org/apiv2/sounds/${sample.id}/?token=bbuumiZWaZ8jpJyjyFqiGxpYZmfocpy7cnzREzmL`
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          if (!data.previews) return;
+          setFreesoundUri(data.previews["preview-hq-mp3"]);
+        });
+    }
+  }, [sample]);
 
   async function playSound(uri: AVPlaybackSource | string) {
     await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
-    if (typeof uri !== "string") {
-      const { sound } = await Audio.Sound.createAsync(uri);
+    if (typeof uri === "string") {
+      const { sound } = await Audio.Sound.createAsync({ uri });
       setSound(sound);
       await sound.playAsync();
     } else {
-      const { sound } = await Audio.Sound.createAsync({ uri });
+      const { sound } = await Audio.Sound.createAsync(uri);
       setSound(sound);
       await sound.playAsync();
     }
@@ -39,7 +53,7 @@ const PadPreview: FC<Props> = ({ pad }) => {
     <View style={styles.container}>
       <Pressable
         style={styles.pad}
-        onPress={() => playSound(sample.uri)}
+        onPress={() => (freesoundUri ? playSound(freesoundUri) : playSound(sample.uri))}
         onLongPress={() => setShowModal(true)}
       ></Pressable>
       <EditPadModal pad={pad} sample={sample} visibility={showModal} setVisibility={setShowModal} />
