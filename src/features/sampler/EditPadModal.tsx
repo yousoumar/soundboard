@@ -42,12 +42,7 @@ const EditPadModal: FC<Props> = ({ visibility = false, setVisibility, sample, pa
           </Pressable>
           <Modal visible={innerModalVisibility} animationType="slide">
             <Screen>
-              <View
-                style={[
-                  styles.header,
-                  { marginBottom: 16, marginTop: 0, borderTopWidth: 0, paddingTop: 0 },
-                ]}
-              >
+              <View style={[styles.header, { marginBottom: 16, marginTop: 0, borderTopWidth: 0 }]}>
                 <Text>Tap on Sample's name to chose</Text>
                 <Pressable onPress={() => setInnerModalVisibility(false)}>
                   <Ionicons name="close-circle-outline" size={34} color="black" />
@@ -75,10 +70,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 16,
+
     borderColor: colors.gray,
     borderBottomWidth: 1,
-    paddingVertical: 16,
+    padding: 16,
   },
   text: {
     fontWeight: "bold",
