@@ -2,7 +2,6 @@ import React, { FC, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useAppSelector } from "../../app/hooks/hooks";
 import Input from "../../components/Input";
-import Screen from "../../components/Screen";
 import colors from "../../config/colors";
 import SamplePreview from "./SamplePreview";
 import { getFiltredSampleList, Sample } from "./sampleSlice";
@@ -26,7 +25,7 @@ const SampleList: FC<Props> = ({ handleSamplePress }) => {
     filtredSample = samples;
   }
   return (
-    <Screen>
+    <>
       <View style={styles.topbar}>
         <Input
           value={searchText}
@@ -83,7 +82,7 @@ const SampleList: FC<Props> = ({ handleSamplePress }) => {
           <SamplePreview key={m.id} sample={m} onPress={handleSamplePress} />
         ))}
       </ScrollView>
-    </Screen>
+    </>
   );
 };
 
