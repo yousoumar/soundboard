@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
+import * as FileSystem from "expo-file-system";
 import React, { FC, useState } from "react";
 import {
   ActivityIndicator,
@@ -19,6 +20,7 @@ import { useGetSoundWithSearchKeywordQuery } from "../../services/freesound";
 import SampleList from "./SampleList";
 import SamplePreview from "./SamplePreview";
 import { addSampleToList, Pad, Sample, updatePad } from "./sampleSlice";
+
 interface Props {
   pad: Pad;
   sample: Sample;
@@ -48,7 +50,6 @@ const PadEditModal: FC<Props> = ({ visibility = false, setVisibility, sample, pa
 
   async function startRecording() {
     try {
-      console.log("Requesting permissions..");
       const result = await Audio.requestPermissionsAsync();
       if (!result.granted) {
         return Alert.alert("You cannot record. Please set your permissions settings");
@@ -57,12 +58,12 @@ const PadEditModal: FC<Props> = ({ visibility = false, setVisibility, sample, pa
         allowsRecordingIOS: true,
         playsInSilentModeIOS: true,
       });
-      console.log("Starting recording..");
+
       const { recording } = await Audio.Recording.createAsync(
         Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
       );
       setRecording(recording);
-      console.log("Recording started");
+
       recording.setOnRecordingStatusUpdate((status) => {
         setTimer(status.durationMillis);
       });
@@ -72,14 +73,27 @@ const PadEditModal: FC<Props> = ({ visibility = false, setVisibility, sample, pa
   }
 
   async function stopRecording() {
-    console.log("Stopping recording..");
-    setRecording(undefined);
     await recording?.stopAndUnloadAsync();
     const uri = recording?.getURI()!;
-    const sample: Sample = { id: Date.now().toString(), name: sampleName, uri, type: "recorded" };
-    dispatch(addSampleToList(sample));
-    setPad(sample);
-    console.log("Recording stopped and stored at", uri);
+
+    try {
+      const split = uri.split("/");
+      const id = split[split.length - 1];
+      const newLocation = FileSystem.documentDirectory + id;
+      FileSystem.moveAsync({ from: uri, to: newLocation });
+      const sample: Sample = {
+        id: Date.now().toString(),
+        name: sampleName,
+        uri: newLocation,
+        type: "recorded",
+      };
+      dispatch(addSampleToList(sample));
+      setPad(sample);
+    } catch (error) {
+      console.log(error);
+    }
+
+    setRecording(undefined);
   }
   return (
     <Modal statusBarTranslucent={true} animationType="slide" visible={visibility}>
