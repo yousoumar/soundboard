@@ -1,6 +1,6 @@
 # Soundboard
 
-Mobile application sampler made with `TypeScript`, `React Native`, and `Redux` as a school project, for my final year of [Bachelor in Computer Science](https://sciences.sorbonne-universite.fr/formation-sciences/licences/licences-professionnelles-l3/licence-professionnelle-metiers-de-0) at [Sorbonne Universié](https://www.sorbonne-universite.fr).
+Mobile application sampler made with `TypeScript`, `React Native`, and `Redux` as a school project, for my final year of [Bachelor in Computer Science](https://sciences.sorbonne-universite.fr/formation-sciences/licences/licences-professionnelles-l3/licence-professionnelle-metiers-de-0) at [Sorbonne University](https://www.sorbonne-universite.fr).
 
 <img src="src/assets/screenshot.png"/>
 
